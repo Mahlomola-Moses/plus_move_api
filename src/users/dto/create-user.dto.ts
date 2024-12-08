@@ -6,7 +6,7 @@ export class CreateUserDto {
   @ApiProperty({ description: 'First Name of the user', example: 'John' })
   @IsNotEmpty()
   @Length(3, 50)
-  firsttName: string;
+  firstName: string;
 
   @ApiProperty({ description: 'Last Name of the user', example: 'Doe' })
   @IsNotEmpty()
@@ -24,5 +24,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
+  @ApiProperty({
+    description: 'User role',
+    example: 'Admin|driver|customer',
+  })
   role: string;
 }
