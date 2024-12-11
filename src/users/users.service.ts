@@ -12,8 +12,8 @@ export class UsersService {
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
   ) {}
-  public async findOne(id: number): Promise<Users | undefined> {
-    return this.usersRepository.findOne({ where: { id } });
+  public async findOne(email: string): Promise<Users | undefined> {
+    return this.usersRepository.findOne({ where: { email } });
   }
 
   public async createUser(createUserDto: CreateUserDto): Promise<Users> {
