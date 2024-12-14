@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Delivery } from './delivery.entity';
 import { Package } from './packages.entity';
 
@@ -38,11 +45,11 @@ export class Users {
   @Column({ default: 0 })
   isCustomerRegistered?: number;
 
-  @Column({ type: 'datetime' })
+  @CreateDateColumn()
   createdDate: Date;
 
-  @Column({ type: 'datetime' })
-  modifiedDate: Date;
+  @UpdateDateColumn()
+  modifiedDate?: Date;
 
   @OneToMany(() => Package, (pkg) => pkg.customer)
   packages: Package[];

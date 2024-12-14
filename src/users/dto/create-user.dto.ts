@@ -76,4 +76,6 @@ export class CreateUserDto {
   })
   @IsOptional()
   isCustomerRegistered?: number;
+
+  createdDate: Date;
 }

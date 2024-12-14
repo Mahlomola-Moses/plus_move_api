@@ -18,7 +18,7 @@ export class Package {
   destination: string;
 
   @Column({ type: 'varchar', length: 100 })
-  status: 'pending' | 'in transit' | 'delivered';
+  status: 'Pending' | 'In transit' | 'Delivered';
 
   @ManyToOne(() => Users, (user) => user.packages, { nullable: false })
   customer: Users;
