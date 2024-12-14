@@ -1,6 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Users } from './user.enity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { Users } from './user.entity';
+import { Package } from './packages.entity';
 
 @Entity('deliveries')
 export class Delivery {
@@ -20,8 +27,11 @@ export class Delivery {
   areaCode: string;
 
   @Column({ type: 'varchar', length: 255 })
-  status: string;
+  status: 'Assigned' | 'In progress' | 'Completed' | 'Returned';
 
-  @ManyToOne(() => Users, (user) => user.deliveries)
+  @ManyToOne(() => Users, (user) => user.deliveries, { nullable: false })
   driver: Users;
+
+  @OneToMany(() => Package, (pkg) => pkg.delivery)
+  packages: Package[];
 }

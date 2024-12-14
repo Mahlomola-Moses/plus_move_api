@@ -2,8 +2,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Users } from './user.enity';
+import { Users } from './user.entity';
 import { Delivery } from './delivery.entity';
+import { Package } from './packages.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Delivery } from './delivery.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: `data/${configService.get('DB_NAME')}`,
-        entities: [Users, Delivery],
+        entities: [Users, Delivery, Package],
         synchronize: true,
       }),
       inject: [ConfigService],
