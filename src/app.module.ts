@@ -7,8 +7,9 @@ import { DbModule } from './db/entities/db.module';
 import { UsersModule } from './users/users.module';
 import { CustomersModule } from './customers/customers.module';
 import { PackagesModule } from './packages/packages.module';
+import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
-  imports: [AuthModule, DbModule, UsersModule, CustomersModule, PackagesModule],
+  imports: [AuthModule, DbModule, UsersModule, CustomersModule, PackagesModule, DeliveryModule],
 })
 export class AppModule {}

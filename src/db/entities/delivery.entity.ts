@@ -29,6 +29,12 @@ export class Delivery {
   @Column({ type: 'varchar', length: 255 })
   status: 'Assigned' | 'In progress' | 'Completed' | 'Returned';
 
+  @Column({ type: 'varchar', length: 255 })
+  receiverEmails: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  receiverPhoneNumbers: string;
+
   @ManyToOne(() => Users, (user) => user.deliveries, { nullable: false })
   driver: Users;
 
