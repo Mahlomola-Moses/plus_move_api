@@ -58,4 +58,23 @@ export class UsersController {
       );
     }
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get()
+  @ApiOperation({ summary: 'Get user by email' })
+  @ApiResponse({ status: 201, description: 'User successfully fetched' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async all(): Promise<Users[]> {
+    try {
+      const model = await this.usersService.getALLUsers();
+      return model;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Failed to fetch user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

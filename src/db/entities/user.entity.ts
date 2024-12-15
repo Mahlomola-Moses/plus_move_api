@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Delivery } from './delivery.entity';
 import { Package } from './packages.entity';
+import { IsEmail } from 'class-validator';
 
 @Entity('users')
 export class Users {
@@ -22,6 +23,7 @@ export class Users {
   lastName: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
+  @IsEmail()
   email: string;
 
   @Column({ type: 'varchar', length: 15, unique: true })
