@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { IsString, IsNotEmpty, IsIn } from 'class-validator';
 
 export class CreateDeliveryDto {
@@ -17,9 +18,22 @@ export class CreateDeliveryDto {
   @IsNotEmpty()
   areaCode: string;
 
-  @IsIn(['Assigned', 'In progress', 'Completed', 'Returned'])
-  status: 'Assigned' | 'In progress' | 'Completed' | 'Returned';
+  @IsIn([
+    'Recieved',
+    'Packaging',
+    'Driver-assigned',
+    'In-transit',
+    'Shipped',
+    'Returned',
+  ])
+  status:
+    | 'Recieved'
+    | 'Packaging'
+    | 'Driver-assigned'
+    | 'In-transit'
+    | 'Returned'
+    | 'Shipped';
 
   @IsNotEmpty()
-  driverId: number;
+  driverId: number | null;
 }

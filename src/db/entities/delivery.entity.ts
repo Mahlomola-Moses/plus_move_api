@@ -27,7 +27,13 @@ export class Delivery {
   areaCode: string;
 
   @Column({ type: 'varchar', length: 255 })
-  status: 'Assigned' | 'In progress' | 'Completed' | 'Returned';
+  status:
+    | 'Recieved'
+    | 'Packaging'
+    | 'Driver-assigned'
+    | 'In-transit'
+    | 'Returned'
+    | 'Shipped';
 
   @Column({ type: 'varchar', length: 255 })
   receiverEmails: string;
@@ -35,7 +41,7 @@ export class Delivery {
   @Column({ type: 'varchar', length: 255 })
   receiverPhoneNumbers: string;
 
-  @ManyToOne(() => Users, (user) => user.deliveries, { nullable: false })
+  @ManyToOne(() => Users, (user) => user.deliveries, { nullable: true })
   driver: Users;
 
   @OneToMany(() => Package, (pkg) => pkg.delivery)
