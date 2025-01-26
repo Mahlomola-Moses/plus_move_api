@@ -21,6 +21,7 @@ import { RolesGuard } from 'src/auth/gaurds/roles.guards';
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User created successfully.' })
@@ -40,15 +41,16 @@ export class UsersController {
       );
     }
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.DRIVER)
-  @Get(':id')
+  @Roles(UserRole.ADMIN)
+  @Get()
   @ApiOperation({ summary: 'Get user by email' })
   @ApiResponse({ status: 201, description: 'User successfully fetched' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  async getUserByEmail(@Param('id') email: string): Promise<Users> {
+  async all(): Promise<Users[]> {
     try {
-      const model = await this.usersService.findOneByEmail(email);
+      const model = await this.usersService.getALLUsers();
       return model;
     } catch (error) {
       console.log(error);
@@ -61,13 +63,32 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Get()
+  @Get('/available-driver')
+  @ApiOperation({ summary: 'Get avaiable driver' })
+  @ApiResponse({ status: 201, description: 'driver successfully fetched' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async getDriverWithLeastPackages(): Promise<Users> {
+    try {
+      const model = await this.usersService.findDriverWithLeastDeliveries();
+      return model;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Failed to fetch driver',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.DRIVER)
+  @Get(':id')
   @ApiOperation({ summary: 'Get user by email' })
   @ApiResponse({ status: 201, description: 'User successfully fetched' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  async all(): Promise<Users[]> {
+  async getUserByEmail(@Param('id') email: string): Promise<Users> {
     try {
-      const model = await this.usersService.getALLUsers();
+      const model = await this.usersService.findOneByEmail(email);
       return model;
     } catch (error) {
       console.log(error);

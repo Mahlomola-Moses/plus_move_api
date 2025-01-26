@@ -64,4 +64,50 @@ export class UsersService {
     console.log(results);
     return results;
   }
+
+  public async getDriverWithLeastPackages(): Promise<Users | undefined> {
+    return undefined;
+  }
+
+  private async findDriverWithLeastDeliveriesx(): Promise<Users> {
+    const drivers = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.deliveries', 'delivery')
+      .where('user.role = :role', { role: 'DRIVER' }) // Assuming 'driver' is the role for drivers
+      .getMany();
+
+    if (drivers.length === 0) {
+    }
+
+    // Find the driver with the least number of deliveries
+    const driverWithLeastDeliveries = drivers.reduce((prev, curr) =>
+      prev.deliveries.length < curr.deliveries.length ? prev : curr,
+    );
+
+    return driverWithLeastDeliveries;
+  }
+
+  public async findDriverWithLeastDeliveries(): Promise<Users | null> {
+    const subQuery = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.deliveries', 'delivery')
+      .select('user.id', 'id')
+      .addSelect('COUNT(delivery.id)', 'deliveryCount')
+      .where('user.role = :role', { role: 'DRIVER' })
+      .groupBy('user.id');
+
+    const driverWithLeastDeliveries = await this.usersRepository
+      .createQueryBuilder('user')
+      .where(`user.id IN (${subQuery.clone().select('user.id').getQuery()})`)
+      .setParameters(subQuery.getParameters())
+      .orderBy(
+        `(${subQuery.clone().select('COUNT(delivery.id)').getQuery()})`,
+        'ASC',
+      )
+      .limit(1)
+      .leftJoinAndSelect('user.deliveries', 'delivery')
+      .getOne();
+
+    return driverWithLeastDeliveries || null;
+  }
 }
