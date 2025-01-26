@@ -24,7 +24,7 @@ export class Package {
   customer: Users;
 
   @ManyToOne(() => Delivery, (delivery) => delivery.packages, {
-    nullable: true,
+    nullable: false,
   })
   delivery: Delivery;
 }

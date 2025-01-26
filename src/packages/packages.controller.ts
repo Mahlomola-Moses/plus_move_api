@@ -1,7 +1,9 @@
+import { Package } from 'src/db/entities/packages.entity';
 /* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Post,
@@ -23,7 +25,19 @@ export class PackagesController {
       return this.packagesService.addCustomerPackage(createPackageDto);
     } catch (error) {
       throw new HttpException(
-        'Failed to fetch user',
+        'Failed to create package',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get()
+  findAll() {
+    try {
+      return this.packagesService.findAll();
+    } catch (error) {
+      throw new HttpException(
+        'Failed to fetch Packages',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

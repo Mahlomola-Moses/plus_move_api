@@ -48,7 +48,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async getUserByEmail(@Param('id') email: string): Promise<Users> {
     try {
-      const model = await this.usersService.findOne(email);
+      const model = await this.usersService.findOneByEmail(email);
       return model;
     } catch (error) {
       console.log(error);

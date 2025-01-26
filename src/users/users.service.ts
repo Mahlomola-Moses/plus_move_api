@@ -13,7 +13,7 @@ export class UsersService {
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
   ) {}
-  public async findOne(email: string): Promise<Users | undefined> {
+  public async findOneByEmail(email: string): Promise<Users | undefined> {
     return this.usersRepository.findOne({ where: { email } });
   }
 
@@ -32,7 +32,9 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  public async getCustomers(IDNumber: string): Promise<Users | undefined> {
+  public async getCustomerByIDNumber(
+    IDNumber: string,
+  ): Promise<Users | undefined> {
     const results = await this.usersRepository.findOne({
       where: { IDNumber: IDNumber, role: 'CUSTOMER' },
     });
@@ -44,7 +46,7 @@ export class UsersService {
     IDNumber: string,
     updateUserDto: Partial<UpdateUserDto>,
   ): Promise<Users> {
-    const user = await this.getCustomers(IDNumber);
+    const user = await this.getCustomerByIDNumber(IDNumber);
 
     if (!user) {
       throw new Error('User not found');
@@ -53,5 +55,13 @@ export class UsersService {
     const updatedUser = this.usersRepository.merge(user, updateUserDto);
 
     return this.usersRepository.save(updatedUser);
+  }
+
+  public async getCustomerById(id: number): Promise<Users | undefined> {
+    const results = await this.usersRepository.findOne({
+      where: { id: id, role: 'CUSTOMER' },
+    });
+    console.log(results);
+    return results;
   }
 }
