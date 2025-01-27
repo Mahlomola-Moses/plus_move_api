@@ -8,9 +8,15 @@ import { UsersModule } from './users/users.module';
 import { CustomersModule } from './customers/customers.module';
 import { PackagesModule } from './packages/packages.module';
 import { DeliveryModule } from './delivery/delivery.module';
-import { DriversModule } from './drivers/drivers.module';
 
 @Module({
-  imports: [AuthModule, DbModule, UsersModule, CustomersModule, PackagesModule, DeliveryModule, DriversModule],
+  imports: [
+    AuthModule,
+    DbModule,
+    UsersModule,
+    CustomersModule,
+    PackagesModule,
+    DeliveryModule,
+  ],
 })
 export class AppModule {}

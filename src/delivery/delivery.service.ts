@@ -43,7 +43,22 @@ export class DeliveryService {
   }
 
   async remove(id: number): Promise<void> {
-    const delivery = await this.findOne(id); // Reuse the findOne method to check if the delivery exists
+    const delivery = await this.findOne(id);
     await this.deliveryRepository.remove(delivery);
+  }
+
+  async assignDriver(
+    id: number,
+    updateDeliveryDto: UpdateDeliveryDto,
+  ): Promise<Delivery> {
+    updateDeliveryDto.status = 'Driver-assigned';
+
+    const delivery = await this.findOne(id);
+
+    const updatedDelivery = this.deliveryRepository.merge(
+      delivery,
+      updateDeliveryDto,
+    );
+    return this.deliveryRepository.save(updatedDelivery);
   }
 }

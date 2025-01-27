@@ -10,6 +10,7 @@ import {
   Delete,
   NotFoundException,
   UseGuards,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { DeliveryService } from './delivery.service';
 import { CreateDeliveryDto } from './dto/create-delivery.dto';
@@ -21,47 +22,104 @@ import { Roles, UserRole } from 'src/common/role.enum';
 @Controller('deliveries')
 export class DeliveryController {
   constructor(private readonly deliveriesService: DeliveryService) {}
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post()
-  create(@Body() createDeliveryDto: CreateDeliveryDto) {
-    return this.deliveriesService.create(createDeliveryDto);
+  async create(@Body() createDeliveryDto: CreateDeliveryDto) {
+    try {
+      return await this.deliveriesService.create(createDeliveryDto);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create delivery');
+    }
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Get()
-  findAll() {
-    return this.deliveriesService.findAll();
+  async findAll() {
+    try {
+      return await this.deliveriesService.findAll();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch deliveries');
+    }
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const delivery = await this.deliveriesService.findOne(id);
-    if (!delivery) {
-      throw new NotFoundException(`Delivery with ID ${id} not found`);
+    try {
+      const delivery = await this.deliveriesService.findOne(id);
+      if (!delivery) {
+        throw new NotFoundException(`Delivery with ID ${id} not found`);
+      }
+      return delivery;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to fetch delivery');
     }
-    return delivery;
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDeliveryDto: UpdateDeliveryDto,
   ) {
-    const delivery = await this.deliveriesService.findOne(id);
-    if (!delivery) {
-      throw new NotFoundException(`Delivery with ID ${id} not found`);
+    try {
+      const delivery = await this.deliveriesService.findOne(id);
+      if (!delivery) {
+        throw new NotFoundException(`Delivery with ID ${id} not found`);
+      }
+      return await this.deliveriesService.update(id, updateDeliveryDto);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to update delivery');
     }
-    return this.deliveriesService.update(id, updateDeliveryDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    const delivery = await this.deliveriesService.findOne(id);
-    if (!delivery) {
-      throw new NotFoundException(`Delivery with ID ${id} not found`);
+    try {
+      const delivery = await this.deliveriesService.findOne(id);
+      if (!delivery) {
+        throw new NotFoundException(`Delivery with ID ${id} not found`);
+      }
+      return await this.deliveriesService.remove(id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to delete delivery');
     }
-    return this.deliveriesService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Post('/assign-driver/:id')
+  async assignDriver(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDeliveryDto: UpdateDeliveryDto,
+  ) {
+    try {
+      const delivery = await this.deliveriesService.findOne(id);
+      if (!delivery) {
+        throw new NotFoundException(`Delivery with ID ${id} not found`);
+      }
+      return await this.deliveriesService.update(id, updateDeliveryDto);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to assign driver');
+    }
   }
 }
